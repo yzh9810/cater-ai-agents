@@ -26,11 +26,7 @@ class RecommendAgent:
 
         self.tools_class = Recommend_Agent_Tools(config_path)
         self.agent_tools = self.tools_class.create_tools()
-        os.environ["LANGCHAIN_TRACING_V2"] = "true"
-        os.environ["LANGCHAIN_API_KEY"] = "ls__e33af7b422394942b1ca565215fd1b92"
-        os.environ["OPENAI_API_KEY"] = "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"
-        
-        self.openai_api_key = "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"
+
         self.prompt_path = "C:/Users/yuezo/OneDrive/桌面/project/cater-ai-agents/models/prompts/search_agent_prompts/Recommendation_agent.txt"
         
         with open(self.prompt_path, 'r') as file:

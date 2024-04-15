@@ -27,7 +27,6 @@ class AddCartAgent:
         self.tools_class = Add_Cart_Agent_Tools(config_path)
         self.agent_tools = self.tools_class.create_tools()
         
-        self.openai_api_key = "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"
         self.prompt_path = "C:/Users/yuezo/OneDrive/桌面/project/cater-ai-agents/models/prompts/search_agent_prompts/Adding_Cart_agent.txt"
         
         with open(self.prompt_path, 'r') as file:

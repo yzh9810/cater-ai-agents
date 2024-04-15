@@ -17,12 +17,8 @@ import json
 
 class ManagerAgent:
     def __init__(self, config_path: str) -> None:
-        # self.config = configparser.ConfigParser()
-        # self.config.read(config_path)
-
-        self.openai_api_key = "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"
         self.prompt_path = "C:/Users/yuezo/OneDrive/桌面/project/cater-ai-agents/models/prompts/search_agent_prompts/Manger_agent.txt"
-        
+
         with open(self.prompt_path, 'r') as file:
             self.prompt_text = file.read()
 
