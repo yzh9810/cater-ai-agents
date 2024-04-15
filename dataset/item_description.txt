@@ -1,0 +1,90 @@
+A1 Premium Black/Green Tea: High-quality black or green tea selection.
+A6 Japanese Sencha: Delicate, steamed green tea from Japan.
+A9 Roasted Oolong Tea: Full-bodied oolong with a roasted flavor.
+J1 White Peach Oolong: Oolong tea with sweet white peach notes.
+J2 Rose Green Tea: Fragrant green tea infused with rose petals.
+B2 Milk Tea w/ Pudding: Creamy milk tea served with soft pudding.
+B3 Milk Tea w/ Grass Jelly: Milk tea accompanied by refreshing grass jelly.
+B1 Signature Boba Milk Tea: Classic milk tea with chewy boba pearls.
+B4 Tofuhua & Red Bean Milk Tea: Milk tea with silky tofu dessert and sweet red beans.
+B5 3G Milk Tea: Milk tea with a mix of grass jelly, guar gum, and gelatin.
+B6 Matcha Milk Tea: Green tea milk tea with rich matcha flavor.
+B7 Jasmine Green Milk Tea: Milk tea infused with aromatic jasmine green tea.
+C1 Signature C-1 Milk Tea: Exclusive house blend milk tea.
+C2 Hokkaido Milk Tea: Creamy milk tea with Hokkaido milk.
+C3 Roasted Oolong Milk Tea: Milk tea featuring roasted oolong tea.
+C4 Okinawa Milk Tea: Milk tea with Okinawan brown sugar.
+C5 Earl Grey Milk Tea: Milk tea infused with bergamot-flavored Earl Grey tea.
+C6 Panda Milk Tea: Milk tea with both black and white boba.
+C7 Fresh Taro Milk Tea: Milk tea with chunks of fresh taro.
+M2 Honey Brown Rice Milk Tea: Milk tea sweetened with honey and brown rice.
+C9 Rose Milk Tea: Milk tea infused with rose flavor.
+C10 Wintermelon Milk Tea: Milk tea with sweet wintermelon flavor.
+D2 Peach Fruit Tea: Refreshing tea with peach flavor.
+D5 Passion Fruit Tea: Tangy passion fruit infused tea.
+D6 Mango Fruit Tea: Sweet mango flavored tea.
+D7 Litchi Green Tea: Green tea with litchi fruit flavor.
+D8 Pomelo Green Tea: Green tea with a hint of pomelo.
+D9 Honey Aloe Green Tea: Green tea with honey and aloe vera.
+D12 Strawberry Fruit Tea: Sweet strawberry flavored tea.
+N9 Strawberry & Mango Fruit Tea: Tea with strawberry and mango flavors.
+F2 Roasted Oolong Kreama: Cream-topped roasted oolong tea.
+F3 Winter Melon Tea Kreama: Cream-topped winter melon flavored tea.
+F4 White Peach Oolong Kreama: Cream-topped white peach oolong tea.
+F5 Rose Green Tea Kreama: Cream-topped rose-infused green tea.
+H1 Matcha Red Bean Smoothie: Smoothie with matcha and red beans.
+H2 Litchi Frosty: Frozen litchi flavored drink.
+H3 Passion Frosty: Frozen passion fruit flavored drink.
+H4 Fresh Taro Smoothie: Smoothie with fresh taro.
+H5 Fresh Mango Frosty: Frozen mango flavored drink.
+H6 Black Tea Oreo & Creamy: Creamy black tea with Oreo cookies.
+H8 Strawberry Crystal: Crystal-clear drink with strawberry flavor.
+S4 Mango Crystal: Crystal-clear drink with mango flavor.
+H9 Hokkaido Frosty & Creamy: Creamy, frozen drink with Hokkaido milk.
+I2 Longan Red Date Tea: Tea infused with longan and red dates.
+I3 Hot Malt Chocolate: Warm, malted chocolate drink.
+K2 Taro & Grass Jelly: Taro drink with grass jelly.
+Y1 Basil Popcorn Chicken: Fried chicken with basil seasoning.
+Y2 Aged Takoyaki: Classic Japanese octopus balls.
+Y4 Seasoned Calamari: Fried calamari with spices.
+Y6 Cutlet Pork Chop: Breaded and fried pork chop.
+Y7 Taiwanese Tempura: Lightly battered and fried Taiwanese snacks.
+Y8 Grilled Lobster Ball: Grilled balls of lobster meat.
+Y9 Japanese Egg Tofu: Silky Japanese-style tofu.
+Y10 Croquette: Fried mashed potato roll.
+Y12 Fried Cutter Fish Balls: Fried balls of cutter fish.
+Y14 Fried Fish Filet of Sole: Fried sole fish filet.
+Y15 Fried Garlic Chicken Wings: Chicken wings with garlic flavor.
+Y16 Gyoza: Japanese pan-fried dumplings.
+Y18 Fried Flour Roll: Fried roll made of flour.
+Y49 Golden Sesame Ball: Fried balls coated with sesame.
+Y19 Mini Egg Roll: Small, fried egg rolls.
+Y20 Mozzarella Sticks: Fried sticks of mozzarella cheese.
+Y21 Fried Hokkaido Oyster: Fried oysters from Hokkaido.
+Y22 Kurobuta Coarse Sausage: Premium quality pork sausage.
+Y24 Shrimp Lollipop: Fried shrimp served on sticks.
+Y25 Shoyu Tonkotsu Ramen: Soy sauce flavored pork bone broth ramen.
+Y26 Black Garlic Oil Ramen: Ramen with black garlic oil.
+Y31 Curry Cutlet Over Rice: Rice with curry and cutlet topping.
+Y27 Crab Tonkotsu Ramen: Crab in pork bone broth ramen.
+Y28 Miso Ramen: Ramen in miso-flavored broth.
+Y29 Shrimp Curry Ramen: Ramen with shrimp curry flavor.
+Y30 Kimchi Spicy Miso Ramen: Spicy miso ramen with kimchi.
+Y32 Gyu Don: Rice bowl topped with beef.
+Y33 Unagi Don: Rice bowl with grilled eel.
+Y34 Fried Shrimp Udon: Udon noodles with fried shrimp.
+Y35 Beef & Union Udon: Udon with beef and onion.
+Y41 Chashu Over Rice: Rice topped with sliced pork belly.
+Y3 Seasoned Curly Fries: Spicy curly fries.
+L1 Thai Ice Tea: Sweetened Thai tea with milk.
+M3 Strawberry Blossom: Strawberry flavored tea.
+M4 STRAWBERRY DELIGHTS: Sweet strawberry drink.
+D10 KHOYO GRAPES FRUIT TEA: Tea with Kyoho grape flavor.
+I1 Fresh Ginger Milk: Warm milk with fresh ginger.
+I4 Golden Ovaltine Malt Drink: Malted chocolate drink with Ovaltine.
+F1. Premium Black / Green Tea: Choice of premium black or green tea.
+Y0 White Rice: Plain steamed white rice.
+---Bag---: Packaging option.
+Y42 Braised Beef Brisket Over Rice: Rice with braised beef brisket.
+Y43 General Chicken Over Rice: Rice with General Tso's chicken.
+Y44 Orange Chicken Over Rice: Rice with orange-flavored chicken.

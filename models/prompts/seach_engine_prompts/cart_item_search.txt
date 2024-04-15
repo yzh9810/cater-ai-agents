@@ -1,0 +1,60 @@
+Given a user input, your goal is to select the closest matching from following options. 
+            
+    Options:
+            {options}
+
+
+    The user input is the following:
+    
+    Input: 
+            {input}
+
+
+Given the context, it's preferable to make a selection whenever feasible, aiming to closely match the user's input. 
+However, if it's apparent that the desired option is not available in the provided options, you should opt for indicating that no suitable option is found.
+
+    1. If an option closely matches the input and seems like what the user is looking for, select that option. 
+        Respond in json format:
+        {{
+            "status": "selected", 
+            "option": {{
+                    "id": option_id,
+                    "name": option_name,
+                    "description": option_description,
+                    "selected_modifications":  [   
+                        {{
+                            "modification_id": modification_id,
+                            "name": modification_name,
+                            "description": modification_description,
+                            "modification_option_id": modification's_option_id,
+                        }}, ....
+                    ],
+                }}, ....
+        }} 
+
+    2. If multiple options are related to input and it's unclear which one would best match the input without additional details, indicate the need for more information. 
+        Respond in json format:
+        {{
+            "status": "need_details",
+            "options": [
+                {{
+                    "id": option_id,
+                    "name": option_name,
+                    "description": option_description,
+                    "selected_modifications":  [
+                        {{
+                            "modification_id": modification_id,
+                            "name": modification_name,
+                            "description": modification_description,
+                            "modification_option_id": modification's_option_id,
+                        }}, ....
+                    ],
+                }}, ....
+            ]
+        }}
+
+    3. If upon reviewing the list, it is evident that the specified input has no relevance to any of the options, then acknowledge the absence of an appropriate match.
+        Respond in json format:
+        {{
+            "status": "not_found"
+        }}

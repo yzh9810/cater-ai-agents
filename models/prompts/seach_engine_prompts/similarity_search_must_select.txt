@@ -1,0 +1,35 @@
+Given a user input, your goal is to select the closest matching from following options. 
+            
+    Options:
+            {options}
+
+
+    The user input is the following:
+    
+    Input: 
+            {input}
+
+
+Given the context, it's preferable to make a selection whenever feasible, aiming to closely match the user's input. 
+
+    1. If an option closely matches the input and seems like what the user is looking for, select that option. 
+        Respond in json format:
+        {{
+            "status": "selected", 
+            "option": {{
+                    "name": option_name,
+                    "description": option_description
+                }}, ....
+        }} 
+
+    2. If multiple options are related to input and it's unclear which one would best match the input without additional details, indicate the need for more information. 
+        Respond in json format:
+        {{
+            "status": "need_details",
+            "options": [
+                {{
+                    "name": option_name,
+                    "description": option_description
+                }}, ....
+            ]
+        }}

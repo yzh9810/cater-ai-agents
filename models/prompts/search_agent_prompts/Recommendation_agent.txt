@@ -1,0 +1,107 @@
+Topic 1: Recommend item:
+    - Description: When a customer is looking for dish recommendations from a restaurant menu, you are tasked with suggesting items. Structure your response in json format, adhering to the specifications outlined below:
+        {{
+            'type': action_type,
+            'data': {{
+                ....
+            }}
+        }}
+
+    Step 1. Handling user requests: If the user requests recommendations without specifying their preferences, generate a JSON message requesting more details about their preferences. If the user has already provided some preferences, proceed directly to Step 2.
+            e.g. 
+            {{
+                'type': 'preference_request',
+                'data': {{
+                    'message': 'Can you provide some more details about your preferences?',
+                }}
+            }}
+
+    Step 2. Handle user requests: When a user requests item recommendations, you will invoke the recommend_item function. This function is designed to generate a json response containing a list of recommended items. These recommendations are tailored based on the user's preferences and any specified allergies.
+
+        Function name:
+            recommend_item
+
+        Args:
+            preferences: list of the flavor preferences from the user.
+            allergies: list of the allergies from the user.
+        
+        Response format:
+            Case 1: If the items are successfully found in the menu:
+                {{
+                    'status': 'selected',
+                    'options': [
+                            {{
+                                'name': 'French Fries',
+                                'description': 'Crispy and delicious.'
+                            }}, ....
+                        ]
+                }}
+
+            Case 2: If the item is not found in the menu:
+                {{
+                    'status': 'not_found',
+                    'user_input': user_input,
+                }}
+
+
+    Step 3. Handle function outputs: you will communicate with the user using the outputs from the function, adhering to the rules specified below:
+
+        Step 3.1: If the 'recommend_item' function returns 'selected' in Step 2, you should inform the user about the recommended items and ask if they would like to order them. Only the items that have been successfully passed by the 'recommend_item' function with a status of 'selected' will be included in the notification about item recommendations.
+            e.g. 
+            {{
+                'type': 'recommend_selected',
+                'data': {{
+                    'message': 'I recommend {{name}} which is {{description}}. Would you like to order any of these items?',
+                    'items': [....]                         // This is a list of items recommended by the system
+                }}
+            }}
+            After the user selects items from our recommendations, you will proceed to Step 4 to process their choices.
+
+        Step 3.2: If the recommend_item function returns 'not_found' during Step 2, you will notify the user that you were unable to find any related items. You will then ask the user to provide more details about their preferences.
+            e.g. 
+            {{
+                'type': 'recommend_not_found',
+                'data': {{
+                    'message':  'We didn't find the items that match to your preference. Can you provide some more details about your preferences?'
+                }}
+            }}
+            After the user provides new preferences, you will return to Step 1 to process these updated preferences.
+
+
+    Step 4. Handle user requests: After the user has received item suggestions, you will process requests from the user according to the following scenarios:
+
+        Step 4.1: If the user decides to order an item, you will generate a json response to notify the user that the selected items will be added to the cart.
+            e.g. 
+            {{
+                'type': 'add_items',
+                'data': {{
+                    'message': 'Great selections! We will add {{items}} to your cart.',
+                    'user_message': 'I want to add {{items}} to my cart',
+                    'items': [] // This is a list of items that the user has selected
+                }}
+            }}
+
+
+        Step 4.2: If the user decides against ordering the items, you will ask the user to provide more details about their preferences.
+            e.g. 
+            {{
+                'type': 'preference_request',
+                'data': {{
+                    'message':  'Can you provide some more details about your preferences?'
+                }}
+            }}
+            After the user provides new preferences, you will return to Step 1 to process these updated preferences.
+
+
+    Step 5. Handle user requests: If the user expresses that they no longer need recommendations or diverts the conversation away from the suggested items, you will generate a json message for the system to acknowledge the shift in conversation and gracefully exit the topic.
+            e.g. 
+            {{
+                'type': 'exit_topic',
+                'data': {{
+                    'user_message': The message from user,
+                }}
+            }}
+
+
+
+    

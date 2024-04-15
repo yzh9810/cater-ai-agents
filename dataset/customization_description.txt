@@ -1,0 +1,88 @@
+Sugar: Adjusts sweetness level.
+Ice: Controls ice amount.
+Tea: Choice of tea base.
+Size: Item size, e.g., large or small.
+Boba: Tapioca pearls add-on.
+Popping Boba Peach: Peach-flavored bursting pearls.
+Mango Pudding: Creamy mango-flavored dessert.
+Egg Pudding: Silky custard pudding.
+Tofu Hua: Soft, silky tofu dessert.
+Grass Jelly: Herbal jelly topping.
+Strawberry Heart Jelly: Strawberry-flavored jelly in heart shapes.
+Mango Jelly: Mango-flavored jelly pieces.
+Lychee Jelly: Lychee-flavored jelly bits.
+Passion Jelly: Passion fruit-flavored jelly.
+Coffee Jelly: Coffee-flavored jelly topping.
+Rainbow Jelly: Colorful jelly assortment.
+Aloe Vera: Refreshing aloe vera chunks.
+Red Bean: Sweetened red bean paste.
+Chia Seed: Nutritious chia seed add-on.
+Agar Boba: Jelly-like tapioca pearls.
+Matcha Pudding: Green tea-flavored pudding.
+Popping Boba Strawberry: Strawberry-flavored bursting pearls.
+Popping Boba Mango: Mango-flavored bursting pearls.
+Fresh Taro: Chunky taro add-on.
+Fresh Mango: Fresh mango pieces.
+Fresh Strawberry: Fresh strawberry slices.
+Fresh Kiwi: Fresh kiwi pieces.
+Sea Salt Creama: Creamy, salty foam topping.
+Bag: Packaging option.
+Add Almond: Almond flavor add-on.
+Add Oat: Oat milk add-on.
+Add Milk: Extra milk addition.
+Add Soy: Soy milk option.
+Modifications: Customizable changes to the item.
+Sub With Almond: Substitute with almond milk.
+Sub With Oat: Substitute with oat milk.
+Sub With Milk: Substitute with dairy milk.
+Sub With Soy: Substitute with soy milk.
+Sub with Almond: Almond milk substitution.
+Sub with Oat: Oat milk substitution.
+Sub with Soy: Soy milk substitution.
+Specification: Specific customization requests.
+No Basil: Omit basil.
+No Chili Powder: Exclude chili powder.
+No Thai Powder: Omit Thai seasoning.
+No Salt & Pepper: Without salt and pepper.
+No Garlic: Exclude garlic.
+No Unagi Sauce: Omit unagi sauce.
+No Mayonnaise: Without mayonnaise.
+No Seaweed: Exclude seaweed.
+No Bonito Flakes: Omit bonito flakes.
+No Pork Chop Sauce: Without pork chop sauce.
+Beef 6 oz: Six ounces of beef.
+BBQ Pork 1 Pc: One piece of BBQ pork.
+Fish Cake 1 Pc: One fish cake piece.
+Bamboo Shoot: Bamboo shoot add-on.
+Corn: Corn add-on.
+Egg: Egg add-on.
+Agaric: Fungus/mushroom add-on.
+Green Onion: Chopped green onion.
+Seaweed: Seaweed topping.
+Spinach: Spinach add-on.
+Chili: Chili add-on for heat.
+Fried Shrimp 1 Pc: One piece of fried shrimp.
+Soft Shell Crab 1 Pc: One soft shell crab.
+Ramen Noodle: Ramen noodles base.
+Udon Noodle: Udon noodles base.
+No Chili: Exclude chili.
+No Spinach: Without spinach.
+No Green Onion: Omit green onion.
+No Agaric: Exclude agaric.
+No Egg: Omit egg.
+No Corn: Without corn.
+No Bamboo Shoot: Exclude bamboo shoots.
+No Fish Cake: Omit fish cake.
+No BBQ Pork: Without BBQ pork.
+Curry: Curry flavor option.
+Tomato: Tomato add-on.
+Cutlet: Breaded meat cutlet.
+Radish: Radish add-on.
+Beef 6 Oz: Six ounces of beef.
+BBQ Pork 3 Oz: Three ounces of BBQ pork.
+No Takoyaki Sauce: Without Takoyaki sauce.
+More Beef Brisket: Extra beef brisket.
+More Broccoli: Additional broccoli.
+More Sesame: Extra sesame seeds.
+More Green Onion: More green onion.
+More Chicken: Additional chicken.
