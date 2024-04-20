@@ -4,9 +4,12 @@ from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_openai import OpenAIEmbeddings
 from langchain_core.runnables import RunnableParallel, RunnablePassthrough
+import queue
 import configparser
 import math
 import json
+import asyncio
+import time
 
 class SearchEngine:
     def __init__(self, menu_retriever, config_path) -> None:
@@ -32,8 +35,6 @@ class SearchEngine:
     def run_similarity_search(self, prompt, user_input, options):
         prompt_template = ChatPromptTemplate.from_template(prompt)
         options = str(options)
-        # print("input = ", user_input)
-        # print("options = ", options)
         args = {
             "options": options,
             "input": user_input
@@ -43,17 +44,91 @@ class SearchEngine:
         chain = prompt_template | self.model | output_parser
 
         response = chain.invoke(args)
-        # print("run_similarity_search: ", response)
         output = json.loads(response)
         return output
 
+
+    async def run_similarity_search_async(self, prompt, user_input, options, thread_queue):
+        prompt_template = ChatPromptTemplate.from_template(prompt)
+        options = str(options)
+        args = {
+            "options": options,
+            "input": user_input
+        }
+
+        output_parser = StrOutputParser()
+        chain = prompt_template | self.model | output_parser
+        response = await chain.ainvoke(args)
+        output = json.loads(response)
+        thread_queue.put(output)
+
+
+    async def run_divide_and_conquer_async(self, prompt, user_input, options, num_each_batch = 5):
+        """
+        Divde and conquer the options
+        
+        """
+        time0 = time.perf_counter()
+
+        num_options = len(options)
+        num_batches = math.ceil(num_options / num_each_batch)
+
+        selected_options = {}
+
+        thread_queue = queue.Queue()
+
+        tasks = []
+        for i in range(num_batches):
+            start = i * num_each_batch
+            end = min((i + 1) * num_each_batch, num_options)
+            batch_options = options[start:end]
+            tasks.append(self.run_similarity_search_async(prompt, user_input, batch_options, thread_queue))
+
+        await asyncio.gather(*tasks)
+
+        time1 = time.perf_counter()
+        elapsed_time = time1 - time0
+        print("for async elapsed_time = ", elapsed_time)
+
+        for i in range(num_batches):
+            output = thread_queue.get()
+            if output["status"] == "selected":
+                selected_option_name = output["option"]["name"]
+                if selected_option_name != "Others":
+                    selected_options[selected_option_name] = output["option"]
+
+            elif output["status"] == "need_details":
+                for option in output["options"]:
+                    selected_options[option["name"]] = option
+
+        selected_options = list(selected_options.values())
+
+        if len(selected_options) == 0:
+            return {
+                "status": "not_found"
+            }
+
+        if len(selected_options) == 1:
+            return {
+                "status": "selected",
+                "option": selected_options[0]
+            }
+        
+        
+        output = self.run_similarity_search(prompt, user_input, selected_options)
+        
+        time2 = time.perf_counter()
+        elapsed_time = time2 - time1
+        print("for sync merge time = ", elapsed_time)
+        return output
 
     def run_divide_and_conquer(self, prompt, user_input, options, num_each_batch = 5):
         """
         Divde and conquer the options
         
         """
-        
+        time0 = time.perf_counter()
+
         num_options = len(options)
         num_batches = math.ceil(num_options / num_each_batch)
 
@@ -76,6 +151,9 @@ class SearchEngine:
 
         selected_options = list(selected_options.values())
 
+        time1 = time.perf_counter()
+        elapsed_time = time1 - time0
+        print("for non-sync elapsed_time = ", elapsed_time)
 
         if len(selected_options) == 0:
             return {
@@ -89,9 +167,11 @@ class SearchEngine:
             }
 
         # print("divided options: ", selected_options)
-        
         output = self.run_similarity_search(prompt, user_input, selected_options)
 
+        time2 = time.perf_counter()
+        elapsed_time = time2 - time1
+        print("for non-sync merge time = ", elapsed_time)
         return output
 
 
@@ -159,15 +239,14 @@ class SearchEngine:
             return {
                 "status": "error"
             }
-        
-        contents = self.run_divide_and_conquer(prompt = self.similarity_search_prompt_with_nonfound, user_input = perference_from_user, options = items_from_menu)
+        # contents = self.run_divide_and_conquer(prompt = self.similarity_search_prompt_with_nonfound, user_input = perference_from_user, options = items_from_menu, num_each_batch = 5)
+        contents = asyncio.run(self.run_divide_and_conquer_async(prompt = self.similarity_search_prompt_with_nonfound, user_input = perference_from_user, options = items_from_menu, num_each_batch = 5))
 
         if contents["status"] == "selected":
             contents["options"] = [contents["option"]]
             del contents["option"]
         elif contents["status"] == "selected":
             contents["status"] = "selected"
-       
         return contents
 
     def recommend_items_by_top_sellings(self, item_names_from_selection, num_items=5):
@@ -198,7 +277,7 @@ class SearchEngine:
                 "status": "error"
             }
         
-        contents = self.run_divide_and_conquer(prompt = self.similarity_search_prompt_with_nonfound, user_input = item_name_from_user, options = items_from_menu)
+        contents = asyncio.run(self.run_divide_and_conquer_async(prompt = self.similarity_search_prompt_with_nonfound, user_input = item_name_from_user, options = items_from_menu, num_each_batch = 5))
 
         return contents
     
@@ -242,7 +321,7 @@ class SearchEngine:
                 "status": "error"
             }
 
-        content = self.run_divide_and_conquer(prompt = self.similarity_search_prompt_with_nonfound, user_input = modification_from_user, options = modifications_from_menu)
+        content = asyncio.run(self.run_divide_and_conquer_async(prompt = self.similarity_search_prompt_with_nonfound, user_input = modification_from_user, options = modifications_from_menu, num_each_batch = 5))
 
         return content
 
@@ -256,7 +335,6 @@ class SearchEngine:
         """
 
         print("-----------------search_modification_specs_by_similiarity-----------------")
-
         modification_spec_from_menu = self.menu_retriever.get_modification_info(modification_name_from_menu)
         if modification_spec_from_menu["options"] == None:
             return {
@@ -274,8 +352,7 @@ class SearchEngine:
             return {
                 "status": "error"
             }
-        
-        content = self.run_divide_and_conquer(prompt = self.similarity_search_prompt_must_select, user_input = modification_spec_from_user, options = modification_spec_from_menu, num_each_batch = 10)
+        content = asyncio.run(self.run_divide_and_conquer_async(prompt = self.similarity_search_prompt_must_select, user_input = modification_spec_from_user, options = modification_spec_from_menu, num_each_batch = 5))
         
         return content
 
@@ -295,7 +372,7 @@ class SearchEngine:
                 "status": "error"
             }
         
-        content = self.run_divide_and_conquer(prompt = self.similarity_search_cart_items_prompt, user_input = item_description_from_user, options = items_in_cart)
+        content = asyncio.run(self.run_divide_and_conquer_async(prompt = self.similarity_search_cart_items_prompt, user_input = item_description_from_user, options = items_in_cart, num_each_batch = 5))
 
         return content
 

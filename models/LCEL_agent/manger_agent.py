@@ -46,8 +46,8 @@ class ManagerAgent:
         self.agent_executor = AgentExecutor(agent=manger_agent_chain, tools = [], verbose=True)
 
 
-
     def run_agent(self, user_input: str) -> dict:
+        
         response = self.agent_executor.invoke({"input": user_input, "chat_history": self.chat_history})
         
         raw_result = response["output"]
@@ -58,13 +58,14 @@ class ManagerAgent:
             AIMessage(content = raw_result)
         ])
 
-
         print("Manager Agent: ", json_result)
-
         return raw_result, json_result
+
 
     def clean_chat_history(self):
         self.chat_history = []
 
+
     def get_chat_history(self) -> list:
         return self.chat_history
+    

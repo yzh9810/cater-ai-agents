@@ -135,8 +135,8 @@ Topic 2: Add item to the cart:
                     'type': 'item_selection_miss_modifications',
                     'data': {{
                         
-                        'message': 'We have successfully located the {{item_name}} in our menu with {{selected_modifications}}. However, we couldn't locate {{nonfound_modifications}}. Also, there seems to be a requirement for {{missing_modifications}} that wasn't initially specified. We also found {{unclear_modifications}} that we are not sure. Could you please provide more details on these required modifications?',
-                        
+                        'message': 'We've found {{item_name}} on our menu, along with {{selected_modifications}}. However, we couldn't find {{nonfound_modifications}}. Additionally, there appears to be a need for {{missing_modifications}} that wasn't mentioned before. We've also encountered {{unclear_modifications}} that need clarification. Could you please provide more information about these required modifications?',
+
                         'item_info': {{
                             'item': item_name,
                             'user_requested_item': user_requested_item,
@@ -195,7 +195,7 @@ Topic 2: Add item to the cart:
             {{
                 'type': 'item_selection_need_details',
                 'data': {{
-                    'message': 'Based on your input {{user_input}}, I found multiple items in the menu, including {{item_names}}. Could you provide more details or specify the item you want to add to your cart?',
+                    'message': 'From what you've entered as {{user_input}}, I've located several items on the menu, such as {{item_names}}. Could you give more details or specify which item you'd like to add to your cart?',
                     'options':
                         [
                             {{
@@ -212,7 +212,7 @@ Topic 2: Add item to the cart:
                 {{
                     'type': 'item_selection_not_found',
                     'data': {{
-                        'message': 'I'm sorry, we don't have such items on the menu. Could you provide more details about the item you want to add to your cart?',
+                        'message': 'I'm sorry, but we don't have that item on our menu. Could you give us more details about what you'd like to add to your cart?',
                     }}
                 }}
             If the user provides more details about the item, we will move to Step 1.
@@ -313,7 +313,7 @@ Topic 2: Add item to the cart:
                 'type': 'item_selection_completed',
                 'data': {{
                     
-                    'message': 'We have successfully found the {{item_name}} with {{selected_modifications}} in our menu. Would you like to add this item to your cart?',
+                    'message': 'We've found {{item_name}} on our menu with {{selected_modifications}}. Do you want to add it to your cart?',
                     
                     'item_info': {{
                         'item': item_name,
@@ -403,7 +403,7 @@ Topic 2: Add item to the cart:
             {{
                 'type': 'confirmed_add_cart',
                 'data': {{
-                    'message': 'I have added {{item_name}}, including the {{selected_modifications}}, in a quantity of {{quantity}} to your cart. Would you like to proceed with placing your order?',
+                    'message': 'I've just popped {{item_name}} into your cart, along with the {{selected_modifications}}, and I've added {{quantity}} of them. Ready to go ahead and place your order?',
                     'cart_info': [
                         {{
                             'item_info': {{
@@ -435,7 +435,7 @@ Topic 2: Add item to the cart:
             }}
 
 
-    Step 7: Handle user requests: If the user signals that they no longer want to add items to the cart or diverts the conversation away from adding items into the cart, you will generate a json message for the system to acknowledge the shift in conversation and gracefully exit the topic.
+    Step 7: Handle user requests: If the user indicates they're no longer interested in adding items to the cart or changes the topic away from cart additions, generate a json message to acknowledge exit the topic.
         e.g. 
             {{
                 'type': 'exit_topic',

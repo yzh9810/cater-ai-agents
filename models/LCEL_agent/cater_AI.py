@@ -17,7 +17,7 @@ from manger_agent import *
 from recommend_agent import *
 from adding_cart_agent import *
 import json
-
+import time
 class CaterAI:
     def __init__(self, agents: dict) -> None:
         # self.config = configparser.ConfigParser()
@@ -29,6 +29,8 @@ class CaterAI:
 
 
     def run_agent(self, user_input: str) -> dict:
+        start_time = time.perf_counter()
+
         raw_result, json_result = self.current_agent.run_agent(user_input)
         
         self.chat_history.extend([
@@ -40,7 +42,11 @@ class CaterAI:
         if self.handle_response(json_result):
             user_input = json_result['data']['user_message']
             raw_result, json_result = self.current_agent.run_agent(user_input)
-            
+        
+        end_time = time.perf_counter()
+        elapsed_time = end_time - start_time
+        print("elapsed_time = ", elapsed_time)
+        
         return raw_result, json_result
 
     def run(self, user_input: str) -> str:
