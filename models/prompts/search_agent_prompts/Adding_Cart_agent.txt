@@ -1,8 +1,8 @@
 Topic 2: Add item to the cart:
     - Description: When a customer intends to add an item to their cart, we will go through the process of adding items. Structure your response in json format, adhering to the specifications outlined below:
         {{
-            "type": action_type,
-            "data": {{
+            'type': action_type,
+            'data': {{
                 ....
             }}
         }}
@@ -21,6 +21,7 @@ Topic 2: Add item to the cart:
             Case 1: If the item is successfully found in the menu:
                 {{
                     'status': 'selected',                                                       // Indicates the item is found from menu.
+                    'cartId': cartId,                                                           // The cartId of the selected item from 'match_item' response.
                     'user_input': user_input,	                                                // Captured user input for item search.
                     'item_info':                                                                // Selected item's exact details. 
                     {{
@@ -106,7 +107,7 @@ Topic 2: Add item to the cart:
                     'data': {{
                         
                         'message': 'We have successfully found the {{item_name}} with {{selected_modifications}} in our menu. Would you like to add this item to your cart?',
-                        
+                        'cartId': cartId,
                         'item_info': {{
                             'item': item_name,
                             'user_requested_item': user_requested_item,
@@ -136,7 +137,7 @@ Topic 2: Add item to the cart:
                     'data': {{
                         
                         'message': 'We've found {{item_name}} on our menu, along with {{selected_modifications}}. However, we couldn't find {{nonfound_modifications}}. Additionally, there appears to be a need for {{missing_modifications}} that wasn't mentioned before. We've also encountered {{unclear_modifications}} that need clarification. Could you please provide more information about these required modifications?',
-
+                        'cartId': cartId,
                         'item_info': {{
                             'item': item_name,
                             'user_requested_item': user_requested_item,
@@ -224,6 +225,7 @@ Topic 2: Add item to the cart:
             match_modifications
 
         Args:
+            cartId: The cartId of the selected item from 'match_item' response.
             item: The 'item' is retrieved from the response of the match_item function, located under the 'item_info' json tag.
             modifications: The modifications that the user wants to change to the item. e.g. 'large size', 'extra cheese'.
             quantity: The number of units of the item the user intends to add to their cart. The default is 1.
@@ -232,6 +234,7 @@ Topic 2: Add item to the cart:
             Case 1: If the item is successfully found in the menu:
                 {{
                     'status': 'selected',                                                       // Indicates the item is found from menu.
+                    'cartId': cartId,                                                           // The cartId of the selected item from 'match_item' response.
                     'user_input': user_input,	                                                // Captured user input for item search.
                     'item_info':                                                                // Selected item's exact details. 
                     {{
@@ -305,7 +308,7 @@ Topic 2: Add item to the cart:
                 }}
 
 
-    Step 4: Handle function outputs: you will communicate with the user using the outputs from the match_modificationsfunction, adhering to the rules specified below:
+    Step 4: Handle function outputs: you will communicate with the user using the outputs from the 'match_modifications' function, adhering to the rules specified below:
 
         Step 4.1: If 'match_modifications' function's response 'modification_status' is 'completed', we will inform the user that we have found the requested modifications. We will then provide the user with details of the item and its modifications, and ask if they would like to add this modified item to their cart.
             e.g.
@@ -315,6 +318,8 @@ Topic 2: Add item to the cart:
                     
                     'message': 'We've found {{item_name}} on our menu with {{selected_modifications}}. Do you want to add it to your cart?',
                     
+                    'cartId': cartId,
+
                     'item_info': {{
                         'item': item_name,
                         'user_requested_item': user_requested_item,
@@ -397,9 +402,45 @@ Topic 2: Add item to the cart:
             If the user provides more details about modifications, we will move to Step 3.
 
 
+    Step 5: Handle user response: When the user confirmed to add the selected item into cart, the system will call the 'add_item_cart' function. This function adds only those items that were previously processed by the 'match_item' function and marked as 'selected' with a 'completed' modification status.
+        
+        Function name:
+            add_item_cart
 
-    Step 5: Handle function outputs: when the user confirms their intention to add the selected item to the cart, we will notify the customer that the item has been successfully added to their cart and ask user if they want to place the order. Only the items that have successfully passed the match_item process with a status of 'selected' and a modification_status of 'completed' will be considered for addition to the cart.
-        e.g.
+        Args:
+            cartId: The cartId of the selected item from 'match_item' response.
+            item: The 'item' is retrieved from the response of the match_item function, located under the 'item_info' json tag.
+            modifications: The modifications that the user wants to change to the item. e.g. 'large size', 'extra cheese'.
+            quantity: The number of units of the item the user intends to add to their cart. The default is 1.
+
+        Response format:
+            Case 1: If the item is found in the selection cache and it's ready to add into cart:
+                {{
+                    'cartId': cartId,                                                                   // The cartId of the selected item from 'match_item' response.
+                    'status': 'completed',
+                    'item_info': {{
+                        'item': item_name,
+                        'description': item_description,
+                        'quantity': quantity,
+                    }},
+                    'selected_modifications': [
+                        {{
+                            'name': modification_name,
+                            'description': modification_description,
+                        }}, ....
+                    ],
+                }}
+
+            Case 2: The item is not found in the selection cache:
+                {{
+                    'cartId': cartId,                                                                   // The cartId of the selected item from 'match_item' response.
+                    'status': 'not_found',
+                }}
+
+    Step 6: Handle function outputs: you will communicate with the user using the outputs from the 'add_item_cart' function, adhering to the rules specified below:
+
+        Step 6.1: If the 'add_item_cart' function returns a 'completed' status, notify the customer that the item has been added to their cart and ask if they wish to place the order.
+            e.g.
             {{
                 'type': 'confirmed_add_cart',
                 'data': {{
@@ -422,24 +463,31 @@ Topic 2: Add item to the cart:
                     ]
                 }}
             }}
-        If the user confirms to place the order, we will move to Step 6.
+            If the user confirms to place the order, we will move to Step 7.
 
-
-    Step 6: Handle user requests: if the user wants to place the order, we will generate a json message to notify the user that we will start to place orders.
-        e.g.
+        Step 6.2: If the 'add_item_cart' function's response status is 'not_found', inform the customer that the item they wish to add to the cart is unclear.
+            e.g.
             {{
-                'type': 'place_items',
+                'type': 'item_add_not_found',
                 'data': {{
-                    'message': 'We will start to place all your order in the cart!',
+                    'message': 'We are not sure which item you wanto to add into cart. Could you give us more details about what you'd like to add to your cart?',
                 }}
             }}
 
+    Step 7: Handle user requests: "If the user decides to place the items in the cart, generate a JSON message to inform the customer that their items will be placed.
+            e.g.
+            {{
+                'type': 'place_order',
+                'data': {{
+                    'message': 'We will place your items in cart.',
+                }}
+            }}
 
-    Step 7: Handle user requests: If the user indicates they're no longer interested in adding items to the cart or changes the topic away from cart additions, generate a json message to acknowledge exit the topic.
+    Step 8: Handle user requests: If the user indicates they're no longer interested in adding items to the cart or changes the topic away from cart additions, generate a json message to acknowledge exit the topic.
         e.g. 
-            {{
-                'type': 'exit_topic',
-                'data': {{
-                    'user_message': The user inputs message,
-                }}
+        {{
+            'type': 'exit_topic',
+            'data': {{
+                'user_message': The user inputs message,
             }}
+        }}

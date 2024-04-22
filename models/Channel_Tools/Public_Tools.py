@@ -20,14 +20,69 @@ class Public_Tools:
 
         self.menu_retriever = Menu_Loading(config_path)
         self.search_engine = SearchEngine(self.menu_retriever, config_path)
+        self.cart_counter = 0
+
+        self.add_item_status_machine = {}
+        self.selection_cache = {}
+
+    def cartId_generator(self):
+        self.cart_counter += 1
+        return self.cart_counter
+    
+    def get_cache_item(self, cartId: int) -> dict:
+        if cartId not in self.selection_cache:
+            print(f"Error: cartId {cartId} not found in cache")
+            return None
+        return self.selection_cache[cartId]
+    
+    def add_cache_item(self, cartId, selection_info: dict) -> bool:
+        print(f"add_cache_item cartId = {selection_info}")
+        self.selection_cache[cartId] = {
+            "status": "completed",
+            "cartId": cartId,
+            "item_info": {
+                "item": selection_info["item_info"]["item"],
+                'description': selection_info["item_info"]["description"],
+                'quantity': selection_info["item_info"]["quantity"],
+            },
+            "selected_modifications": [],
+        }
+        return True
+        
+    def modify_cache_item(self, cartId: int, selection_info: dict) -> bool:
+        # Check if cartId exists
+        if cartId not in self.selection_cache:
+            print(f"Error: cartId {cartId} not found in cache")
+            return False
+        
+        # Check item name
+        if self.selection_cache[cartId]["item_info"]["item"] != selection_info["item_info"]["item"]:
+            print(f"Error: item name mismatch for adding item into cache, cartId = {cartId}, selection_info = {selection_info['item_info']['item']}, cache = {self.selection_cache[cartId]['item_info']['item']}")
+            return False
+        # Update status
+        self.selection_cache[cartId]["status"] = selection_info["modifications_info"]["status"]
+
+
+        # Update quantity
+        self.selection_cache[cartId]["item_info"]["quantity"] = selection_info["item_info"]["quantity"]
+
+        # Add new modifications
+        for modification in selection_info["modifications_info"]["selected_modifications"]:
+            if modification not in self.selection_cache[cartId]["selected_modifications"]:
+                self.selection_cache[cartId]["selected_modifications"].append(modification)
+
+        return True
+
 
     def recommend_item(self, preferences: list[str], allergies: list[str]) -> dict:
         recommended_items = self.search_engine.recommend_items_by_perference(preferences)
         return recommended_items
 
+
     def match_item(self, item: str, modifications: list[str], quantity: int) -> dict:
         item_response = self.search_engine.search_items_by_similiarity(item)
         if item_response["status"] == "selected":
+            cartId = self.cartId_generator()
             item_name = item_response["option"]["name"]
             item_description = item_response["option"]["description"]
 
@@ -38,10 +93,18 @@ class Public_Tools:
                 "quantity": quantity,
             }
 
+            response = {
+                "status": "selected",
+                "cartId": cartId,
+                "item_info": item_info,
+            }
             print("item selected item = ", item_info["item"], " call match_modifications")
-            modifications_response = self.match_modifications(item_info["item"], modifications, item_info["quantity"])
+            self.add_cache_item(cartId, response)
+
+            modifications_response = self.match_modifications(cartId, item_info["item"], modifications, item_info["quantity"])
             response = modifications_response
             
+
         elif item_response["status"] == "need_details":
             response = {
                 "status": "need_details",
@@ -55,7 +118,7 @@ class Public_Tools:
             }
         return response
 
-    def match_modifications(self, item: str, modifications: list[str], quantity: int) -> dict:
+    def match_modifications(self, cartId: int, item: str, modifications: list[str], quantity: int) -> dict:
         """
          {
             "status": "selected",  
@@ -117,19 +180,26 @@ class Public_Tools:
         required_modifications_from_menu = self.menu_retriever.get_modifications_by_item(item, modification_type = "Required")
         optional_modifications_from_menu = self.menu_retriever.get_modifications_by_item(item, modification_type = "Optional")
 
+        selection_item = self.get_cache_item(cartId)
+        if selection_item is None:
+            print(f"Error: cartId {cartId} not found in cache")
+            return None
+        
+
         response_json = {
             "status": "selected",
+            "cartId": cartId,
             "user_input": item,
             "item_info": {
-                "item": item,
-                "user_requested_item": item,
-                "description": item,
-                "quantity": quantity,
-            }
+                "item": selection_item["item_info"]["item"],
+                "user_requested_item": selection_item["item_info"]["item"],
+                "description": selection_item["item_info"]["description"],
+                "quantity": selection_item["item_info"]["quantity"],
+            },
         }
 
         for modification in modifications:
-            name_response = self.search_engine.search_modification_name_by_similiarity(item, modification)
+            name_response = self.search_engine.search_modification_name_by_similiarity(response_json["item_info"]["item"], modification)
 
             print(f"modification = {modification}, name_response = {name_response}/n")
 
@@ -197,7 +267,25 @@ class Public_Tools:
 
         response_json["modifications_info"] = modification_info
 
+        if self.modify_cache_item(cartId, response_json) == False:
+            print(f"Error: failed to modify cache item for cartId {cartId}")
+
         return response_json
+
+    def add_item_cart(self, cartId: int, item: str, modifications: list[str], quantity: int) -> dict:
+
+        selection_item = self.get_cache_item(cartId)
+        if selection_item is None:
+            return self.match_item(item, modifications, quantity)
+
+        response = {
+            "cartId": cartId,
+            "status": selection_item["status"],
+            "item_info": selection_item["item_info"],
+            "selected_modifications": selection_item["selected_modifications"],
+        }
+
+        return response
 
     def get_resturant_info(self):
         prompt = "A boba tea shop located in the heart of the city. We offer a variety of drinks and snacks. Our business hours are from 11:00 am to 9:00 pm. We are located at 1234 Main Street, San Francisco, CA 94122. Our phone number is (415) 123-4567. We are looking forward to serving you soon!"

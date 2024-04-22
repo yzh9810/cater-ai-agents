@@ -26,11 +26,13 @@ class CaterAI:
 
         self.chat_history = []
         self.current_agent = self.pending_agents["manger_agent"]
+        self.current_agent_name = "manger_agent"
 
 
     def run_agent(self, user_input: str) -> dict:
-        start_time = time.perf_counter()
+        print("current_agent_name = ", self.current_agent_name)
 
+        start_time = time.perf_counter()
         raw_result, json_result = self.current_agent.run_agent(user_input)
         
         self.chat_history.extend([
@@ -39,7 +41,7 @@ class CaterAI:
         ])
 
 
-        if self.handle_response(json_result):
+        while self.handle_response(json_result):
             user_input = json_result['data']['user_message']
             raw_result, json_result = self.current_agent.run_agent(user_input)
         
@@ -67,12 +69,15 @@ class CaterAI:
         
         if agent_response["type"] == "exit_topic":
             return self.switch_to_manager_agent()
+        
         return False
     
     def switch_to_recommend_agent(self):
         if "recommend_item_agent" in self.pending_agents:
             self.pending_agents["recommend_item_agent"].clean_chat_history()
             self.current_agent = self.pending_agents["recommend_item_agent"]
+            print(f"from {self.current_agent_name} to recommend_item_agent")
+            self.current_agent_name = "recommend_item_agent"
             return True
         
         print("Error: No recommend_item in self.pending_agents.")
@@ -82,6 +87,8 @@ class CaterAI:
         if "add_items_agent" in self.pending_agents:
             self.pending_agents["add_items_agent"].clean_chat_history()
             self.current_agent = self.pending_agents["add_items_agent"]
+            print(f"from {self.current_agent_name} to add_items_agent")
+            self.current_agent_name = "add_items_agent"
             return True
 
         print("Error: No add_items_into_cart in self.pending_agents.")
@@ -89,5 +96,7 @@ class CaterAI:
     
     def switch_to_manager_agent(self):
         self.current_agent = self.pending_agents["manger_agent"]
+        print(f"from {self.current_agent_name} to manger_agent")
+        self.current_agent_name = "manger_agent"
         return True
     

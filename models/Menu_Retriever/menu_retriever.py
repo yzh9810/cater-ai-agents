@@ -173,24 +173,35 @@ class Menu_Loading:
             for specification in raw_item['specifications']:
                 if specification["name"]["en-US"] == "Modifications":
                     continue
+                
+                modification_name = specification["name"]["en-US"]
+                modification_name = modification_name.rstrip(' ')
 
                 if "required" not in specification:
-                    menu_item["modifications"]["Required"].append(specification["name"]["en-US"])
+                    menu_item["modifications"]["Required"].append(modification_name)
+
                 elif specification["required"] == True:
-                    menu_item["modifications"]["Required"].append(specification["name"]["en-US"])
+                    menu_item["modifications"]["Required"].append(modification_name)
                 elif specification["required"] == False:
                     for value in specification["values"]:
-                        menu_item["modifications"]["Optional"].append(value["name"]["en-US"])
+                        modification_name = value["name"]["en-US"]
+                        modification_name = modification_name.rstrip(' ')
+                        menu_item["modifications"]["Optional"].append(modification_name)
 
             for attribute in raw_item["attributes"]:
-                if attribute["name"]["en-US"] == "Specifications":
+                modification_name = attribute["name"]["en-US"]
+                modification_name = modification_name.rstrip(' ')
+
+                if modification_name == "Specifications":
                     menu_item["modifications"]["Required"].append("Size")
                 else:
-                    menu_item["modifications"]["Optional"].append(attribute["name"]["en-US"])
+                    menu_item["modifications"]["Optional"].append(modification_name)
 
             for addOnRef in raw_item["addOnRefs"]:
                 for value in addOnRef["values"]:
-                    menu_item["modifications"]["Optional"].append(value["name"]["en-US"])
+                    modification_name = value["name"]["en-US"]
+                    modification_name = modification_name.rstrip(' ')
+                    menu_item["modifications"]["Optional"].append(modification_name)
 
             if item_name in self.item_desc:
                 menu_item["Description"] = self.item_desc[item_name]

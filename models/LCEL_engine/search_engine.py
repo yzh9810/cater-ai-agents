@@ -174,6 +174,12 @@ class SearchEngine:
         print("for non-sync merge time = ", elapsed_time)
         return output
 
+    def filter_options(self, options, n_items):
+        # select the top n popular items
+        # options format: [{"name": item_name, "description": item_description}]
+        options = sorted(options, key=lambda x: x['name'])
+        return options[:n_items]
+
 
     def check_options_format(self, options):
         for option in options:
@@ -221,7 +227,7 @@ class SearchEngine:
                     return False
         return True
 
-    def recommend_items_by_perference(self, perference_from_user, items_from_menu = None):
+    def recommend_items_by_perference(self, perference_from_user, n_items = 2, items_from_menu = None):
         """
         Recommend items based on perferences
 
@@ -240,16 +246,13 @@ class SearchEngine:
                 "status": "error"
             }
         # contents = self.run_divide_and_conquer(prompt = self.similarity_search_prompt_with_nonfound, user_input = perference_from_user, options = items_from_menu, num_each_batch = 5)
-        contents = asyncio.run(self.run_divide_and_conquer_async(prompt = self.similarity_search_prompt_with_nonfound, user_input = perference_from_user, options = items_from_menu, num_each_batch = 5))
+        content = asyncio.run(self.run_divide_and_conquer_async(prompt = self.similarity_search_prompt_with_nonfound, user_input = perference_from_user, options = items_from_menu, num_each_batch = 5))
 
-        if contents["status"] == "selected":
-            contents["options"] = [contents["option"]]
-            del contents["option"]
-        elif contents["status"] == "selected":
-            contents["status"] = "selected"
-        return contents
+        if content["status"] == "need_details":
+            content["options"] = self.filter_options(content["options"], n_items)
+        return content
 
-    def recommend_items_by_top_sellings(self, item_names_from_selection, num_items=5):
+    def recommend_items_by_top_sellings(self, item_names_from_selection, num_items=2):
         """
         Recommend top selling items
 
@@ -260,7 +263,7 @@ class SearchEngine:
         return list(item_names_from_selection)[:num_items]
 
 
-    def search_items_by_similiarity(self, item_name_from_user, items_from_menu = None):
+    def search_items_by_similiarity(self, item_name_from_user, n_items = 2, items_from_menu = None):
         """
         Search similar items based on item_name
 
@@ -277,9 +280,12 @@ class SearchEngine:
                 "status": "error"
             }
         
-        contents = asyncio.run(self.run_divide_and_conquer_async(prompt = self.similarity_search_prompt_with_nonfound, user_input = item_name_from_user, options = items_from_menu, num_each_batch = 5))
+        content = asyncio.run(self.run_divide_and_conquer_async(prompt = self.similarity_search_prompt_with_nonfound, user_input = item_name_from_user, options = items_from_menu, num_each_batch = 5))
 
-        return contents
+        if content["status"] == "need_details":
+            content["options"] = self.filter_options(content["options"], n_items)
+            
+        return content
     
     def get_price_by_item(self, item_name, quantity, modifications):
         """
@@ -292,7 +298,7 @@ class SearchEngine:
         return
     
     
-    def search_modification_name_by_similiarity(self, item_name_from_menu, modification_from_user):
+    def search_modification_name_by_similiarity(self, item_name_from_menu, modification_from_user, n_items = 2):
         """
         Search similar modifications based on modifications
         
@@ -323,10 +329,13 @@ class SearchEngine:
 
         content = asyncio.run(self.run_divide_and_conquer_async(prompt = self.similarity_search_prompt_with_nonfound, user_input = modification_from_user, options = modifications_from_menu, num_each_batch = 5))
 
+        if content["status"] == "need_details":
+            content["options"] = self.filter_options(content["options"], n_items)
+
         return content
 
 
-    def search_modification_specs_by_similiarity(self, modification_name_from_menu, modification_spec_from_user):
+    def search_modification_specs_by_similiarity(self, modification_name_from_menu, modification_spec_from_user, n_items = 2):
         """
         Search similar modification spec based on modification spec
 
@@ -354,10 +363,13 @@ class SearchEngine:
             }
         content = asyncio.run(self.run_divide_and_conquer_async(prompt = self.similarity_search_prompt_must_select, user_input = modification_spec_from_user, options = modification_spec_from_menu, num_each_batch = 5))
         
+        if content["status"] == "need_details":
+            content["options"] = self.filter_options(content["options"], n_items)
+
         return content
 
 
-    def search_cart_items_by_similiarity(self, item_description_from_user, items_in_cart):
+    def search_cart_items_by_similiarity(self, item_description_from_user, items_in_cart, n_items = 2):
         """
         Search similar items in cart based on item description
 
@@ -374,6 +386,9 @@ class SearchEngine:
         
         content = asyncio.run(self.run_divide_and_conquer_async(prompt = self.similarity_search_cart_items_prompt, user_input = item_description_from_user, options = items_in_cart, num_each_batch = 5))
 
+        if content["status"] == "need_details":
+            content["options"] = self.filter_options(content["options"], n_items)
+        
         return content
 
 
