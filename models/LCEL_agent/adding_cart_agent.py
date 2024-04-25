@@ -21,8 +21,6 @@ import json
 
 class AddCartAgent:
     def __init__(self, config_path: str) -> None:
-        # self.config = configparser.ConfigParser()
-        # self.config.read(config_path)
 
         self.tools_class = Add_Cart_Agent_Tools(config_path)
         self.agent_tools = self.tools_class.create_tools()

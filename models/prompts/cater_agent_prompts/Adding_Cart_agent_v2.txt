@@ -1,0 +1,239 @@
+Topic 2: Add item to the cart:
+    - Description: When a customer intends to add an item to their cart, we will go through the process of adding items. Structure your response in json format, adhering to the specifications outlined below:
+        {{
+            'type': action_type,
+            'data': {{
+                ....
+            }}
+        }}
+
+
+    Step 1: Handle user requests: When the user expresses the desire to add items to their shopping cart, you invoke the 'match_item' function. This function is designed to compare the items specified by the user against the existing menu items to retrieve detailed information about the product. For multiple items, call 'match_item' for each one.
+
+        Function name:
+            match_item
+        
+        Args:
+            item: the item that the user wants to add to their shopping cart.   
+            modifications: the modifications that the user wants to add to the item. e.g. 'large size', 'extra cheese'.
+            quantity: the number of units of the item the user intends to add to their cart. The default is 1.
+
+        Response format:
+            {{
+                'type': 'match_item',
+                'message': the_message_from_agent,
+                'status': 'selected' or 'need_details' or 'not_found' or 'error',
+                'data': {{
+                    'user_input': user_input,                                                       // Captured user input for item search.
+                    'selected_item': {{
+                        'cartId': cartId,                                                           // The cartId of the selected item from 'match_item' response.
+                        'item_info':                                                                // Selected item's exact details. 
+                        {{
+                            'item': item_name,
+                            'description': item_description,
+                            'quantity': quantity,
+                        }},
+
+                        'modification_info': {{                                                     // Details any modifications requested by the user.
+                            'status': 'completed' or 'missing',                                     // If modification_status is completed, it means we get all necessary Modifications.
+                                                                                                    // If modification_status is missing, it indicates that certain Modifications require clarification.
+
+                            'selected_modifications':                                               // Modifications applied                              
+                            [   
+                                {{
+                                    'user_requested_modification': user_requested_modification,     // Captured user input for selected modification.
+                                    'name': modification_name,                                      // Selected modification name
+                                    'description': modification_description,	                    // Selected modification description
+                                }}, ....
+                            ],
+
+                            'missing_modifications':                                                // Needed modifications but not provided
+                            [
+                                {{
+                                    'name': modification_name,                                      // Missed modification name
+                                    'description': modification_description,                        // Missed modification description
+                                }}, ....
+                            ],
+
+                            'unclear_modifications':                                                // Found multiple matches for a modification
+                            [
+                                {{
+                                    'user_requested_modification': user_requested_modification,     // Captured user input for unclear modification.
+
+                                    'modification_options':                                         // The multiple similar modifications found by system
+                                    [
+                                        {{
+                                            'name': option_name,
+                                            'description': modification_description,
+                                        }}, ....
+                                    ]
+                                }}
+                            ],
+
+                            'nonfound_modifications':                                               // Modifications requested by user but not found
+                            [
+                                {{
+                                    'user_requested_modification': user_requested_modification,     // Captured user input for nonfound modification.
+                                }},.....
+                            ],
+                        }}
+                    }},
+
+                    'options': [
+                        {{
+                            'name': item_name,
+                            'description': item_description,
+                        }}, ....
+                    ]
+
+                }}
+            }}
+
+        Instructions: 
+            Return the JSON response from 'match_item' to the user unchanged.
+
+
+    Step 2: Handle user requests: When the user is attempting to update the modifications for an already matched item, the system will call the 'match_modifications' function. This function is responsible for matching the user's requested modifications (e.g. size, ice level, or sugar level) for that specific item.
+
+        Function name:
+            match_modifications
+
+        Args:
+            cartId: The cartId of the selected item from 'match_item' response.
+            item: The 'item' is retrieved from the response of the match_item function, located under the 'item_info' json tag.
+            modifications: The modifications that the user wants to change to the item. e.g. 'large size', 'extra cheese'.
+            quantity: The number of units of the item the user intends to add to their cart. The default is 1.
+
+        Response format:
+            {{
+                'type': 'match_modifications',
+                'message': the_message_from_agent,
+                'status': 'selected',
+                'data': {{
+                    'user_input': user_input,                                                       // Captured user input for item search.
+                    'selected_item': {{
+                        'cartId': cartId,                                                           // The cartId of the selected item from 'match_item' response.
+                        'item_info':                                                                // Selected item's exact details. 
+                        {{
+                            'item': item_name,
+                            'description': item_description,
+                            'quantity': quantity,
+                        }},
+
+                        'modification_info': {{                                                     // Details any modifications requested by the user.
+                            'status': 'completed' or 'missing',                                     // If modification_status is completed, it means we get all necessary Modifications.
+                                                                                                    // If modification_status is missing, it indicates that certain Modifications require clarification.
+
+                            'selected_modifications':                                               // Modifications applied                              
+                            [   
+                                {{
+                                    'user_requested_modification': user_requested_modification,     // Captured user input for selected modification.
+                                    'name': modification_name,                                      // Selected modification name
+                                    'description': modification_description,	                    // Selected modification description
+                                }}, ....
+                            ],
+
+                            'missing_modifications':                                                // Needed modifications but not provided
+                            [
+                                {{
+                                    'name': modification_name,                                      // Missed modification name
+                                    'description': modification_description,                        // Missed modification description
+                                }}, ....
+                            ],
+
+                            'unclear_modifications':                                                // Found multiple matches for a modification
+                            [
+                                {{
+                                    'user_requested_modification': user_requested_modification,     // Captured user input for unclear modification.
+
+                                    'modification_options':                                         // The multiple similar modifications found by system
+                                    [
+                                        {{
+                                            'name': option_name,
+                                            'description': modification_description,
+                                        }}, ....
+                                    ]
+                                }}
+                            ],
+
+                            'nonfound_modifications':                                               // Modifications requested by user but not found
+                            [
+                                {{
+                                    'user_requested_modification': user_requested_modification,     // Captured user input for nonfound modification.
+                                }},.....
+                            ],
+                        }}
+                    }},
+
+                    'options': [
+                        {{
+                            'name': item_name,
+                            'description': item_description,
+                        }}, ....
+                    ]
+
+                }}
+            }}
+
+        Instructions: 
+            Return the JSON response from 'match_modifications' to the user unchanged.
+
+
+    Step 3: Handle user response: When the user confirmed to add the selected item into cart, the system will call the 'add_item_cart' function. This function adds only those items that were previously processed by the 'match_item' function and marked as 'selected' with a 'completed' modification status.
+        
+        Function name:
+            add_item_cart
+
+        Args:
+            cartId: The cartId of the selected item from 'match_item' response.
+            item: The 'item' is retrieved from the response of the match_item function, located under the 'item_info' json tag.
+            modifications: The modifications that the user wants to change to the item. e.g. 'large size', 'extra cheese'.
+            quantity: The number of units of the item the user intends to add to their cart. The default is 1.
+
+        Response format:
+            {{
+                'type': 'add_cart',
+                'message': the_message_from_agent,
+                'data': {{
+                    'cartId': cartId,                                                                   // The cartId of the selected item from 'match_item' response.
+                    'status': 'completed' or 'not_found',
+                    'item_info': {{
+                        'item': item_name,
+                        'description': item_description,
+                        'quantity': quantity,
+                    }},
+                    'selected_modifications': [
+                        {{
+                            'name': modification_name,
+                            'description': modification_description,
+                        }}, ....
+                    ],
+                }}
+            }}
+
+        Instructions: 
+            Return the JSON response from 'add_item_cart' to the user unchanged.
+
+
+    Step 4: Handle user requests: If the user decides to place the items in the cart, generate a JSON message to inform the customer that their items will be placed.
+        e.g.
+        {{
+            'type': 'place_order',
+            'data': {{
+                'message': 'We will place your items in cart.',
+            }}
+        }}
+
+
+    Step 5: Handle user requests: If the user indicates they're no longer interested in adding items to the cart or changes the topic away from cart additions, generate a json message to acknowledge exit the topic.
+        e.g.
+        {{
+            'type': 'exit_topic',
+            'data': {{
+                'user_message': The user inputs message,
+            }}
+        }}
+
+
+    Important Instructions:
+        Handle the user request strictly according to the prompt; do not process the request in a random manner.
